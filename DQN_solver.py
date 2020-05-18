@@ -6,6 +6,7 @@ import numpy as np
 from collections import deque
 import Blackjack
 import argparse
+import matplotlib.pyplot as plt
 
 class DQN_Solver:
 
@@ -18,7 +19,7 @@ class DQN_Solver:
             self._init(**env_config)
     
 
-    def _init(self, one_card_dealer=False, card_values=None, n_episodes=1000, n_win_ticks=195, max_env_steps=None, gamma=1.0, epsilon=1.0, epsilon_min=0.01, epsilon_log_decay=0.995, alpha=0.003, alpha_decay=0.01, batch_size=32):
+    def _init(self, one_card_dealer=False, card_values=None, n_episodes=20, n_win_ticks=195, max_env_steps=None, gamma=1.0, epsilon=1.0, epsilon_min=0.01, epsilon_log_decay=0.995, alpha=0.003, alpha_decay=0.01, batch_size=32):
         self.memory = deque(maxlen=100000)
         #self.num_states = len(self.env.observation_space.sample())
         self.num_states = 57 #3
@@ -32,6 +33,7 @@ class DQN_Solver:
         self.n_episodes = n_episodes
         self.n_win_ticks = n_win_ticks
         self.batch_size = batch_size
+        self.rewards = []
 
         # Blackjack specific
         if card_values is None:
@@ -80,10 +82,13 @@ class DQN_Solver:
         #print(f'player card indices: {card_indices}')
         n_cards = len(card_indices)
         card_values = self._card_values[card_indices]
+
+        #print(f'card values: {card_values}')
         
         card_values = np.sum(card_values)
         if verbose: 
             print(f'player summed score: {card_values}')
+        
         return card_values, int(1 in card_indices), n_cards
         
 
@@ -141,8 +146,7 @@ class DQN_Solver:
             x_batch.append(state[0])
             y_batch.append(y_target[0])
 
-      
-        self.train_model.fit(np.array(x_batch), np.array(y_batch), verbose=0)#,batch_size=len(x_batch))
+        self.train_model.fit(np.array(x_batch), np.array(y_batch), verbose=1)#,batch_size=len(x_batch))
         
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
@@ -161,7 +165,6 @@ class DQN_Solver:
             unprocessed_state = self.env.reset()
             #print(f'unprocessed: {unprocessed_state}')
             state = self.preprocess_state(unprocessed_state)
-            # [player_value, has_ace, dealer_value]
             
             if verbose:     
                 print(f'new episode')
@@ -178,7 +181,6 @@ class DQN_Solver:
                 action = self.choose_action(state, self.get_epsilon(e))
                 next_state, reward, done, _ = self.env.step(action)
                 next_state = self.preprocess_state(next_state)
-                print(f'next states: {next_state}')
                 
                 if verbose: 
                     print(f'action chosen: {action}')
@@ -187,12 +189,12 @@ class DQN_Solver:
 
                 self.memorize(state, action, reward, next_state, done)
                 state = next_state
-                
-
+            
             # as soon as the pole falls down, we record the achieved score
             score = reward
             scores.append(score)
             mean_score = np.mean(scores)
+            self.rewards.append(mean_score)
 
             # we want consistent performance over a certain amount of episodes
             if mean_score > self.n_win_ticks and e >= 100:
@@ -209,6 +211,20 @@ class DQN_Solver:
 
             if e % 1 == 0:
                 self.copy_weights()
+
+        titles = {
+            1: "Basic",
+            2: "Regular",
+            3: "All the 2's",
+            4: "Random"
+        }
+        plt.plot(self.rewards)
+        plt.xlabel("Episodes")
+        plt.ylabel("Mean Reward")
+        plt.title(f'{titles[MODE]}')
+        plt.ylim((0,1))
+        plt.savefig(f'./plots/{MODE}.png')
+        #plt.show()
 
 
 if __name__ == "__main__":
