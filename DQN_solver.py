@@ -5,6 +5,7 @@ import gym
 import numpy as np 
 from collections import deque
 import Blackjack
+import argparse
 
 class DQN_Solver:
 
@@ -37,8 +38,7 @@ class DQN_Solver:
             self._card_values = np.asarray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10] * 4)
         else:
             self._card_values = np.asarray(card_values)
-        #self._card_values = np.asarray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10] * 4)
-        #self._card_values = np.asarray([2] * 52)
+        
 
         hidden_units=[64,32]#[24,48]
 
@@ -178,6 +178,7 @@ class DQN_Solver:
                 action = self.choose_action(state, self.get_epsilon(e))
                 next_state, reward, done, _ = self.env.step(action)
                 next_state = self.preprocess_state(next_state)
+                print(f'next states: {next_state}')
                 
                 if verbose: 
                     print(f'action chosen: {action}')
@@ -206,12 +207,38 @@ class DQN_Solver:
             self.replay(self.batch_size)
             
 
-            if e % 15 == 0:
+            if e % 1 == 0:
                 self.copy_weights()
 
-def dqn_solver_eval(config):
-    agent = DQN_Solver(config)
+
 if __name__ == "__main__":
+
+    # select Blackjack mode
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('--mode', type=int, help='Blackjack mode')
+    args = parser.parse_args()
+
+    MODE = args.mode
+
+    if MODE == 1:
+        env_config = {"one_card_dealer": True}
+
+    elif MODE == 2:
+        env_config = {}
+
+    elif MODE == 3:
+        env_config = {"card_values": [2] * 52}
+
+    elif MODE == 4:
+        env_config = {"card_values": [3,  1,  3,  9,  6,  0,  7, -2,  2,  6,  8,  1,  3,
+                                               4, -1,  4,  3,  9, -1,  4,  0,  4,  7, -2, -1,  5,
+                                               2,  6, -3, -1,  2,  2, -1,  7,  1,  0,  7,  8,  4,
+                                               5,  3, -1,  0,  3, -1,  3,  0,  6, -2,  4, -3,  4]}
+
+    else: 
+        print(f'Mode has to be an integer between 1 and 4')
+        exit(0)
+
     verbose = 0
-    agent = DQN_Solver()
+    agent = DQN_Solver(env_config=env_config)
     agent.run()
