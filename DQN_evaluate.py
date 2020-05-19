@@ -74,7 +74,7 @@ class DQN_Solver:
         self.target_model.compile(loss='mse', optimizer=self.optimizer)
 
         # define checkpoint
-        self.checkpoint_dir = f'./checkpoints/{VERSION}/{MODE}/'
+        self.checkpoint_dir = f'./checkpoints/{VERSION}/'
         self.checkpoint = tf.train.Checkpoint(step=tf.Variable(0, dtype=tf.int64),
                                           dqn_solver=self.train_model,
                                           optimizer=self.optimizer)
@@ -224,18 +224,15 @@ class DQN_Solver:
             SCORES.append(score)
             mean_score = np.mean(SCORES)
 
-            global BW
-
-            if mean_score > BW and e > 10:
-                BW = mean_score
+            if mean_score > BW:
+                best_reward = mean_score
                 self.manager.save()
 
             if e % 10 == 0:
                 print(f'Episode {e}, mean score over the last 100 episodes: {mean_score}!')
 
-            if e > 10:                    
-                with open(LOG_PATH, 'a') as r:
-                    r.write(f'{score, mean_score}\n')
+            with open(LOG_PATH, 'a') as r:
+                r.write(f'{score, mean_score}\n')
 
             
 
