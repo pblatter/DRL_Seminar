@@ -15,10 +15,10 @@ There are 4 modes:
 In order to solve the Blackjack problem, we implemented the DQN algorithm. The main challenge was the abstraction of the problem setting. We tried incorporating as many features as possible such that the agent is able to generalize to all 4 problem modes. Therefore, the state was modelled by concatenating the following features:
 
 - sum of player's cards
-- 21 - sum of player's cards
+- 21 - (minus) sum of player's cards
 - the number of cards the player is holding
 - value of dealer's card
-- 21 - value of dealer's card
+- 21 - (minus) value of dealer's card
 - current deck
 
 The current deck is given by a modified version of the card value array in which the values of the cards that have already been drawn were set to zero. The modified value array incorporates knowledge about the remaining cards. This in combination with the other features leads to better decision making when choosing the action.
@@ -27,13 +27,13 @@ We use the same agent for all the different modes. The only thing that we tried 
 
 ## Results
 
-In order to measure the performance of the agent, we monitored the mean reward over the last 100 episodes. The initial plan was to run the agent for 250 episodes per task, but as can be seen in the plots, for modes 3 and 4, the performance started increasing again after approximately 250 episodes. Therefore, we ran the agent for 425 episodes for modes 3 and 4. One interesting thing is that the mean reward converged towards 1 for tasks 1 and 3, whereas the mean reward of the agent was more volatile in tasks 2 and 4. One reason for that might be that in tasks 2 and 4, the behaviour of the sum of the dealer's cards cannot be predicted as easily as in tasks 1 and 3 due to the hidden card in the beginning. 
+In order to measure the performance of the agent, we monitored the mean reward over the last 100 episodes (without the reward achieved during experience replay). The initial plan was to run the agent for 250 episodes per task, but as can be seen in the plots, for modes 3 and 4, the performance started increasing again after approximately 250 episodes. Therefore, we ran the agent for 425 episodes for modes 3 and 4. One interesting thing is that the mean reward converged towards 1 for tasks 1 and 3, whereas the mean reward of the agent was more volatile in tasks 2 and 4. One reason for that might be that in tasks 2 and 4, the behaviour of the sum of the dealer's cards cannot be predicted as easily as in tasks 1 and 3 due to the hidden card in the beginning. 
 
 ### Basic
 
 <img src="./plots/v1_1.png" width="350" title="hover text">
 
-The basic task seemed to be easily solvable for the agent.
+The basic task seemed to be easily solvable for the agent. The mean reward converged to 0.99 after 250 episodes.
 
 ### Regular
 
@@ -65,8 +65,8 @@ Install dependencies:
 
 ```Bash
 cd DRL_Seminar
-conda create env -f conda_env.yml
-conda activate drl-seminar
+conda env create --file blackjack.yml
+conda activate blackjack
 ```
 
 ## Usage
