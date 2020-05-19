@@ -41,7 +41,7 @@ The basic task seemed to be easily solvable for the agent. The mean reward conve
 
 This task seemed to be more problematic for the agent. One idea that has not been implemented yet is to decrease the frequency with which the weights are copied from the training to the target network, as the mean reward was volatile and changes with a frequency which was smaller than the weight copying frequency. The question then would be how this affects the performance of the agent on the other tasks.
 
-In order to test our claim, we decreased the copying frequency to 8 episodes and also trained the agent for 250 episodes. (This has only been done for mode 2.) Results are shown below. One can see that the mean reward is not as volatile as in the previous case and reaches higher scores (approximately 0.42-0.43).
+In order to test our claim, we decreased the copying frequency to 8 episodes and also trained the agent for 250 episodes. (This has only been done for mode 2.) Results are shown below. One can see that the mean reward is not as volatile as in the previous case and reaches higher scores (approximately 0.42-0.43). This could also be tested in the random card value game setting.
 
 <img src="./plots/v2_2.png" width="350" title="hover text">
 
