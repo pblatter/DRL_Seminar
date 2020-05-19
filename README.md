@@ -41,17 +41,21 @@ The basic task seemed to be easily solvable for the agent. The mean reward conve
 
 This task seemed to be more problematic for the agent. One idea that has not been implemented yet is to decrease the frequency with which the weights are copied from the training to the target network, as the mean reward was volatile and changes with a frequency which was smaller than the weight copying frequency. The question then would be how this affects the performance of the agent on the other tasks.
 
+In order to test our claim, we decreased the copying frequency to 8 episodes and also trained the agent for 250 episodes. (This has only been done for mode 2.) Results are shown below. One can see that the mean reward is not as volatile as in the previous case and reaches higher scores (approximately 0.42-0.43).
+
+<img src="./plots/v2_2.png" width="350" title="hover text">
+
 ### All the 2's
 
 <img src="./plots/v1_3.png" width="350" title="hover text">
 
-As mentioned above, in this task the agent needed more time to figure out how to solve the problem but finally managed to solve it. 
+As mentioned above, in this task the agent needed more time to figure out how to solve the problem but finally managed to solve it. The mean reward converged to 0.98.
 
 ### Random
 
 <img src="./plots/v1_4.png" width="350" title="hover text">
 
-Similar to the second mode of the game, the mean reward was rather volatile. We argue that the agent kind of got the idea of the game (getting to 21 points) but due to the dealer's hidden card in the beginning, there is always the possibility to lose - that's life!
+Similar to the second mode of the game, the mean reward was rather volatile. The mean reward moved around approximately 0.4. We argue that the agent kind of got the idea of the game (getting to 21 points) but due to the dealer's hidden card in the beginning, there is always the possibility to lose - that's life!
 
 ## Installation
 
@@ -100,9 +104,13 @@ If you run training command with a combination of **mode** and **version** and t
 python3 DQN_solver.py --mode <mode> --version v1 --best_mean_reward 0.99
 ```
 
+Unfortunately, the checkpoints for modes 1 and 2 were lost during the uploading process. The experiments were run multiple times and always yielded similar results. Therefore, we suggest to simply re-train the agents for mode 1 and 2 (sorry).
+
 ### Plotting
 In order to plot the mean reward that the agent got, simply run: 
 
 ``` Python
 python3 plot_generation.py --mode <mode> --version <version>
 ```
+
+Disclaimer: the computation of the epsilon (for the epsilon greedy part) is based on an earlier DQN version once used for the gym cartpole environment.
