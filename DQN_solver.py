@@ -146,7 +146,7 @@ class DQN_Solver:
             x_batch.append(state[0])
             y_batch.append(y_target[0])
 
-        self.train_model.fit(np.array(x_batch), np.array(y_batch), verbose=1)#,batch_size=len(x_batch))
+        self.train_model.fit(np.array(x_batch), np.array(y_batch), verbose=0)#,batch_size=len(x_batch))
         
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay

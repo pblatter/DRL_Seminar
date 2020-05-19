@@ -27,13 +27,19 @@ The current deck is given by a modified version of the card value array in which
 
 ### Basic
 
+<img src="./plots/1.png" width="350" title="hover text">
+
 ### Regular
 
-<img src="./plots/1.png" width="350" title="hover text">
+<img src="./plots/2.png" width="350" title="hover text">
 
 ### All the 2's
 
+<img src="./plots/3.png" width="350" title="hover text">
+
 ### Random
+
+<img src="./plots/4.png" width="350" title="hover text">
 
 ## Installation
 
